@@ -1,11 +1,11 @@
-package ru.mephi.scheme;
+package ru.mephi.scheme.component;
 
 public enum ElementType {
     XOR,
     AND,
-    NOT,
+    //NOT,
     INPUT,
     OUTPUT,
     TRUE,
-    FALSE
+    FALSE,
 }
