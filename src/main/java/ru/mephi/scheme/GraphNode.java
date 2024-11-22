@@ -8,6 +8,8 @@ import java.util.List;
 
 @Getter
 public class GraphNode {
+    private final List<GraphNode> nextElements;
+    private final List<GraphNode> nextElementsWithInversion;
     @Setter
     private ElementType type;
     /**
@@ -15,8 +17,6 @@ public class GraphNode {
      * */
     @Setter
     private int number = 0;
-    private final List<GraphNode> nextElements;
-    private final List<GraphNode> nextElementsWithInversion;
 
     public GraphNode(ElementType type, List<GraphNode> nextElements, List<GraphNode> elementsWithInversion) {
         this.type = type;

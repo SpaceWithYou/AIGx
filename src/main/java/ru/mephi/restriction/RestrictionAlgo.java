@@ -11,8 +11,8 @@ import java.util.Map;
  * */
 @AllArgsConstructor
 public class RestrictionAlgo {
-    private Graph graph;
     private RestrictionProcessor processor;
+    private Graph graph;
 
     /**
      * @param restrictions Номера входных переменных и их значения

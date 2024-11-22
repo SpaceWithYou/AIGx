@@ -40,15 +40,15 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * */
 
 public class FileParser {
-    private BufferedReader reader;
-    private ComponentExtractor componentExtractor;
-    private boolean isParallel = false;
-
     private static final int BUFFER_SIZE = 1 << 16;
     private static final String TYPE_COMMENT = "c ";
     //Ключи - номер выхода (литерал)
     //Все номера выходов считаем различными
     private static Map<Integer, GraphNode> elementsMapping;
+
+    private BufferedReader reader;
+    private ComponentExtractor componentExtractor;
+    private boolean isParallel = false;
 
     public FileParser(String path, boolean parallelFlag) {
         try {
@@ -102,11 +102,13 @@ public class FileParser {
         var type = element.getType();
         var node = new GraphNode(type, new ArrayList<>(), new ArrayList<>());
 
-        int number = element.getOutputs().get(0);
+        int number;
         if(type == ElementType.INPUT) {
+            number = element.getOutputs().get(0);
             node.setNumber(number);
             graph.addInput(node, number);
         } else if (type == ElementType.OUTPUT) {
+            number = element.getInputs().get(0);
             node.setNumber(number);
             graph.addOutput(node, number);
         } else {

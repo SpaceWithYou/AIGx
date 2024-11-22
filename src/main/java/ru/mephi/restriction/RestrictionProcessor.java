@@ -6,6 +6,8 @@ import ru.mephi.scheme.Graph;
  * Процессор для распространения ограничений
  * */
 public interface RestrictionProcessor {
-    /**Распространяет уже <strong>загруженные</strong> ограничения*/
+    /**
+     * Распространяет уже <strong>загруженные</strong> ограничения
+     * */
     void process(Graph graph);
 }

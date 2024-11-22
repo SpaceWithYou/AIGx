@@ -1,23 +1,23 @@
 package ru.mephi.parser;
 
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.MethodSource;
+import ru.mephi.util.ResourceManager;
 
 class FileParserTest {
+    private static ResourceManager resourceManager = new ResourceManager();
 
-    private static final String RESOURCE_PREFIX = "src/test/resources/";
+    private static String[] getFilenames() {
+        return resourceManager.getResourcesFileNames();
+    }
 
     @ParameterizedTest(name = "Scheme: {arguments} iteration")
-    @ValueSource(strings = {"InputOutput", "Not", "And", "Xor", "ComplexScheme"})
+    @MethodSource("getFilenames")
     public void parseFileTest(String fileName) {
-        var fileParser = new FileParser(createPath(fileName), false);
+        var fileParser = new FileParser(fileName, false);
 
         var graph = fileParser.parseFile();
 
         System.out.println(graph);
-    }
-
-    private String createPath(String fileName) {
-        return RESOURCE_PREFIX + fileName;
     }
 }
