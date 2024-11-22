@@ -6,7 +6,6 @@ import ru.mephi.scheme.component.ElementType;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Реализация AIGX (And-Inverted-Graph-eXtended)
@@ -15,22 +14,22 @@ import java.util.Map;
 @Getter
 public class Graph {
     //Номера входов
-    private final Map<Integer, GraphNode> inputs;
+    private final List<GraphNode> inputs;
     //Номера выходов
-    private final Map<Integer, GraphNode> outputs;
+    private final List<GraphNode> outputs;
     private final List<GraphNode> graphNodes;
 
     public void addNode(GraphNode node) {
         this.graphNodes.add(node);
     }
 
-    public void addInput(GraphNode node, int number) {
-        this.inputs.put(number, node);
+    public void addInput(GraphNode node) {
+        this.inputs.add(node);
         addNode(node);
     }
 
-    public void addOutput(GraphNode node, int number) {
-        this.outputs.put(number, node);
+    public void addOutput(GraphNode node) {
+        this.outputs.add(node);
         addNode(node);
     }
 
@@ -44,6 +43,22 @@ public class Graph {
         }
     }
 
+    public void removeNode(int index) {
+        if(index >= this.inputs.size()) {
+            throw new IllegalArgumentException("The index should be less than the number of inputs");
+        }
+
+        var node = this.inputs.get(index);
+        var type = node.getType();
+
+        if(type == ElementType.INPUT) {
+            inputs.remove(node.getNumber());
+        } else if(type == ElementType.OUTPUT) {
+            outputs.remove(index);
+        }
+        this.graphNodes.remove(node.getNumber());
+    }
+
     public void removeNodes(Collection<? extends  GraphNode> nodes) {
         this.graphNodes.removeAll(nodes);
         for(var node : nodes) {
@@ -51,7 +66,7 @@ public class Graph {
             if(type == ElementType.INPUT) {
                 inputs.remove(node.getNumber());
             } else if (type == ElementType.OUTPUT) {
-                inputs.remove(node.getNumber());
+                outputs.remove(node.getNumber());
             }
         }
     }

@@ -2,7 +2,7 @@ package ru.mephi.util;
 
 import java.util.List;
 
-public class ResourceManager {
+public class TestClass {
     private static final String RESOURCE_PREFIX = "src/test/resources/";
 
     private static final List<String> resourcesFileNames = List.of(
@@ -13,13 +13,13 @@ public class ResourceManager {
             "ComplexScheme"
     );
 
-    public String[] getResourcesFileNames() {
+    public static String[] getResourcesFileNames() {
         return resourcesFileNames.stream()
-                .map(this::createPath)
+                .map(TestClass::createPath)
                 .toArray(String[]::new);
     }
 
-    private String createPath(String fileName) {
+    private static String createPath(String fileName) {
         return RESOURCE_PREFIX + fileName;
     }
 }

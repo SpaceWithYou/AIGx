@@ -4,21 +4,20 @@ import ru.mephi.scheme.Graph;
 import ru.mephi.scheme.GraphNode;
 import ru.mephi.scheme.component.ElementType;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
-import static ru.mephi.scheme.component.ElementType.AND;
 import static ru.mephi.scheme.component.ElementType.FALSE;
+import static ru.mephi.scheme.component.ElementType.OUTPUT;
 import static ru.mephi.scheme.component.ElementType.TRUE;
-import static ru.mephi.scheme.component.ElementType.XOR;
 
 
 public class SimpleRestrictionProcessor implements RestrictionProcessor {
-    private final List<GraphNode> possibleNodesWithNoParents = new ArrayList<>();
+    private final Set<GraphNode> possibleNodesWithNoParents = new HashSet<>();
 
     @Override
     public void process(Graph graph) {
-        var inputs = graph.getInputs().values();
+        var inputs = graph.getInputs();
         inputs.forEach(this::processNode);
 
         inputs.forEach(this::checkOrphans);
@@ -48,22 +47,28 @@ public class SimpleRestrictionProcessor implements RestrictionProcessor {
         }
     }
 
-    /**
-     * В случае ArrayList быстрее итерироваться по индексу!
-     * */
     private void processTrueCase(GraphNode node) {
         ElementType type;
         var nextElements = node.getNextElements();
         //Обрабатываем обычные ноды
-        for (var nextNode : nextElements) {
+        for (int i = 0; i < nextElements.size(); i++) {
+            var nextNode = nextElements.get(i);
             type = nextNode.getType();
-            if(type == AND) {
-                nextElements.remove(nextNode);
-                possibleNodesWithNoParents.add(nextNode);
-            } else if(type == XOR) {
-
-            } else {
-                processNode(nextNode);
+            switch (type) {
+                case AND -> {
+                    nextElements.remove(i);
+                    possibleNodesWithNoParents.add(node);
+                    possibleNodesWithNoParents.add(nextNode);
+                }
+                case XOR -> {
+                    //XOR
+                }
+                case OUTPUT -> {
+                    setOutputValue(nextNode, TRUE, FALSE);
+                }
+                default -> {
+                    processNode(nextNode);
+                }
             }
         }
 
@@ -71,34 +76,56 @@ public class SimpleRestrictionProcessor implements RestrictionProcessor {
         var nextInvertedElements = node.getNextElementsWithInversion();
         //Обрабатываем ноды с отрицанием
         for (var nextNode : nextInvertedElements) {
-            processFalseCase(nextNode);
+            if(nextNode.getType() == OUTPUT) {
+                setOutputValue(nextNode, TRUE, FALSE);
+            } else {
+                processFalseCase(nextNode);
+            }
         }
     }
 
-    /**
-     * В случае ArrayList быстрее итерироваться по индексу!
-     * */
     private void processFalseCase(GraphNode node) {
         ElementType type;
         var nextElements = node.getNextElements();
         //Обрабатываем обычные ноды
-        for (var nextNode : nextElements) {
+        for (int i = 0; i < nextElements.size(); i++) {
+            var nextNode = nextElements.get(i);
             type = nextNode.getType();
-            if(type == AND) {
-                nextNode.setType(FALSE);
-                processFalseCase(nextNode);
-            } else if(type == XOR) {
-                nextElements.remove(nextNode);
-                possibleNodesWithNoParents.add(nextNode);
-            } else {
-                processNode(nextNode);
+            switch (type) {
+                case AND -> {
+                    nextNode.setType(FALSE);
+                    processFalseCase(nextNode);
+                }
+                case XOR -> {
+                    nextElements.remove(i);
+                    possibleNodesWithNoParents.add(node);
+                    possibleNodesWithNoParents.add(nextNode);
+                }
+                case OUTPUT -> {
+                    setOutputValue(nextNode, FALSE, TRUE);
+                }
+                default -> {
+                    processNode(nextNode);
+                }
             }
         }
 
         var nextInvertedElements = node.getNextElementsWithInversion();
         //Обрабатываем ноды с отрицанием
         for (var nextNode : nextInvertedElements) {
-            processTrueCase(nextNode);
+            if(nextNode.getType() == OUTPUT) {
+                setOutputValue(nextNode, FALSE, TRUE);
+            } else {
+                processTrueCase(nextNode);
+            }
+        }
+    }
+
+    private void setOutputValue(GraphNode output, ElementType value, ElementType orElse) {
+        if(output.getNumber() > 0) {
+            output.setType(value);
+        } else {
+            output.setType(orElse);
         }
     }
 

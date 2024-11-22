@@ -25,12 +25,13 @@ public class RestrictionAlgo {
 
     private void setValueToNode(int nodeNumber, boolean value) {
         var inputs = graph.getInputs();
-        if (inputs.containsKey(nodeNumber)) {
-            inputs.get(nodeNumber).setType(getTypeByValue(value));
+        int index = nodeNumber - 1;
+        if(index < inputs.size() && index >= 0) {
+            inputs.get(index).setType(getTypeByValue(value));
         }
     }
 
     private ElementType getTypeByValue(boolean value) {
-        return value ? ElementType.INPUT : ElementType.FALSE;
+        return value ? ElementType.TRUE : ElementType.FALSE;
     }
 }

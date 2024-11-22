@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * @version 1.9
+ * @version 1.9.1
  * Формат файла:<br>
  * Каждая строка имеет вид f_k'_i1'_i2'_i3'_...in'_0_o1'_o2'_..om' , где
  * f - обозначение функционального элемента, i1',..., in' - номера входа причем,
@@ -31,9 +31,15 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * </ul>
  * Частные случаи:
  * <ul>
- *     <li>Вход: i_n, где n - номер входа, n > 0. Причем все значения n должны быть различными!</li>
- *     <li>Выход: o_n, где n - номер выхода, n может быть отрицательным,
- *     в случае если мы хотим вывести отрицание литерала. Значения n должны быть различными!</li>
+ *     <li>
+ *         Вход: i_n, где n - номер входа, n > 0. Причем все значения n должны быть последовательными натуральными числами,
+ *     начиная с 1!
+ *     </li>
+ *     <li>
+ *         Выход: o_n, где n - номер выхода, n может быть отрицательным,
+ *     в случае если мы хотим вывести отрицание литерала. Значения n должны быть по абсолютной величине последовательными
+ *     натуральными числами, начиная с 1!
+ *     </li>
  *     <li>Комментарий: c_text, где text - текст комментария</li>
  * </ul>
  * Строки записываются по уровням схемы!
@@ -71,8 +77,8 @@ public class FileParser {
             Graph result;
             if(isParallel) {
                 result = new Graph(
-                        new ConcurrentSkipListMap<>(),
-                        new ConcurrentSkipListMap<>(),
+                        new CopyOnWriteArrayList<>(),
+                        new CopyOnWriteArrayList<>(),
                         new CopyOnWriteArrayList<>()
                 );
                 linesStream
@@ -82,8 +88,8 @@ public class FileParser {
                         .forEach(element -> processElement(element, result));
             } else {
                 result = new Graph(
-                        new TreeMap<>(),
-                        new TreeMap<>(),
+                        new ArrayList<>(),
+                        new ArrayList<>(),
                         new ArrayList<>()
                 );
                 linesStream
@@ -105,12 +111,14 @@ public class FileParser {
         int number;
         if(type == ElementType.INPUT) {
             number = element.getOutputs().get(0);
+
             node.setNumber(number);
-            graph.addInput(node, number);
+            graph.addInput(node);
         } else if (type == ElementType.OUTPUT) {
             number = element.getInputs().get(0);
+
             node.setNumber(number);
-            graph.addOutput(node, number);
+            graph.addOutput(node);
         } else {
             graph.addNode(node);
         }
