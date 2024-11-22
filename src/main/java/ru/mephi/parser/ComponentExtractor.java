@@ -16,13 +16,11 @@ import static ru.mephi.scheme.component.ElementType.values;
 
 /**Парсит компонент из строки*/
 public class ComponentExtractor {
-
     private static final String ERROR_MESSAGE = "Wrong row format at [%s]";
     private static final String XOR_AND_PATTERN = "[xa]( -?[1-9]+)+ 0( [1-9]+)+";
     private static final String INPUT_PATTERN = "i ([1-9]+)";
     private static final String OUTPUT_PATTERN = "o (-?[1-9]+)";
     //private static final String NOT_PATTERN = "n( [1-9]+)+ 0( [1-9]+)+";
-
     private static final HashMap<String, ElementType> fileTypesMapping = new HashMap<>(values().length);
 
     static {

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @version 1.9
@@ -30,19 +31,19 @@ import java.util.concurrent.ConcurrentSkipListMap;
  * </ul>
  * Частные случаи:
  * <ul>
- *     <li>Вход: i_n, где n - номер входа, n > 0</li>
+ *     <li>Вход: i_n, где n - номер входа, n > 0. Причем все значения n должны быть различными!</li>
  *     <li>Выход: o_n, где n - номер выхода, n может быть отрицательным,
- *     в случае если мы хотим вывести отрицание литерала</li>
+ *     в случае если мы хотим вывести отрицание литерала. Значения n должны быть различными!</li>
  *     <li>Комментарий: c_text, где text - текст комментария</li>
  * </ul>
  * Строки записываются по уровням схемы!
  * */
 
 public class FileParser {
-
     private BufferedReader reader;
     private ComponentExtractor componentExtractor;
     private boolean isParallel = false;
+
     private static final int BUFFER_SIZE = 1 << 16;
     private static final String TYPE_COMMENT = "c ";
     //Ключи - номер выхода (литерал)
@@ -65,34 +66,46 @@ public class FileParser {
     }
 
     public Graph parseFile() {
-        var result = new Graph();
         try {
             var linesStream = reader.lines();
+            Graph result;
             if(isParallel) {
+                result = new Graph(
+                        new ConcurrentSkipListMap<>(),
+                        new ConcurrentSkipListMap<>(),
+                        new CopyOnWriteArrayList<>()
+                );
                 linesStream
                         .parallel()
                         .filter(line -> !line.startsWith(TYPE_COMMENT))
                         .map(componentExtractor::getFunctionalElementFromRow)
                         .forEach(element -> processElement(element, result));
             } else {
+                result = new Graph(
+                        new TreeMap<>(),
+                        new TreeMap<>(),
+                        new ArrayList<>()
+                );
                 linesStream
                         .filter(line -> !line.startsWith(TYPE_COMMENT))
                         .map(componentExtractor::getFunctionalElementFromRow)
                         .forEach(element -> processElement(element, result));
             }
+            return result;
         } catch (Exception e) {
             System.err.println(e.getMessage());
+            return null;
         }
-        return result;
     }
 
     private void processElement(FunctionalElement element, Graph graph) {
         var type = element.getType();
         var node = new GraphNode(type, new ArrayList<>(), new ArrayList<>());
+
         if(type == ElementType.INPUT) {
-            graph.addInput(node);
+            graph.addInput(node, element.getOutputs().get(0));
         } else if (type == ElementType.OUTPUT) {
-            graph.addOutput(node);
+            graph.addOutput(node, element.getInputs().get(0));
         } else {
             graph.addNode(node);
         }

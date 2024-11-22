@@ -1,13 +1,15 @@
 package ru.mephi.scheme;
 
 import lombok.Getter;
+import lombok.Setter;
 import ru.mephi.scheme.component.ElementType;
 
 import java.util.List;
 
 @Getter
 public class GraphNode {
-    private final ElementType type;
+    @Setter
+    private ElementType type;
     private final List<GraphNode> nextElements;
     private final List<GraphNode> nextElementsWithInversion;
 
