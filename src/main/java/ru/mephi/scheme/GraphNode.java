@@ -10,6 +10,11 @@ import java.util.List;
 public class GraphNode {
     @Setter
     private ElementType type;
+    /**
+     * Номер элемента, используется для input и output, для типов значение равно 0
+     * */
+    @Setter
+    private int number = 0;
     private final List<GraphNode> nextElements;
     private final List<GraphNode> nextElementsWithInversion;
 

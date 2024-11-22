@@ -38,18 +38,21 @@ public class Graph {
         this.graphNodes.remove(node);
         var type = node.getType();
         if(type == ElementType.INPUT) {
-            //
+            inputs.remove(node.getNumber());
         } else if(type == ElementType.OUTPUT) {
-            outputs.forEach((key, value) -> {
-                if(value == node) {
-                    inputs.remove(key);
-                }
-            });
+            outputs.remove(node.getNumber());
         }
     }
 
     public void removeNodes(Collection<? extends  GraphNode> nodes) {
         this.graphNodes.removeAll(nodes);
-
+        for(var node : nodes) {
+            var type = node.getType();
+            if(type == ElementType.INPUT) {
+                inputs.remove(node.getNumber());
+            } else if (type == ElementType.OUTPUT) {
+                inputs.remove(node.getNumber());
+            }
+        }
     }
 }

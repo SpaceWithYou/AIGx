@@ -102,10 +102,13 @@ public class FileParser {
         var type = element.getType();
         var node = new GraphNode(type, new ArrayList<>(), new ArrayList<>());
 
+        int number = element.getOutputs().get(0);
         if(type == ElementType.INPUT) {
-            graph.addInput(node, element.getOutputs().get(0));
+            node.setNumber(number);
+            graph.addInput(node, number);
         } else if (type == ElementType.OUTPUT) {
-            graph.addOutput(node, element.getInputs().get(0));
+            node.setNumber(number);
+            graph.addOutput(node, number);
         } else {
             graph.addNode(node);
         }

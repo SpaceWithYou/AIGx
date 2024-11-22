@@ -14,7 +14,7 @@ import static ru.mephi.scheme.component.ElementType.XOR;
 
 
 public class SimpleRestrictionProcessor implements RestrictionProcessor {
-    private List<GraphNode> possibleNodesWithNoParents = new ArrayList<>();
+    private final List<GraphNode> possibleNodesWithNoParents = new ArrayList<>();
 
     @Override
     public void process(Graph graph) {
@@ -22,7 +22,7 @@ public class SimpleRestrictionProcessor implements RestrictionProcessor {
         inputs.forEach(this::processNode);
 
         inputs.forEach(this::checkOrphans);
-        graph.getGraphNodes()
+        graph.removeNodes(possibleNodesWithNoParents);
     }
 
     /**
@@ -45,8 +45,6 @@ public class SimpleRestrictionProcessor implements RestrictionProcessor {
             processTrueCase(node);
         } else if(type == FALSE) {
             processFalseCase(node);
-        } else {
-            return;
         }
     }
 
@@ -104,6 +102,11 @@ public class SimpleRestrictionProcessor implements RestrictionProcessor {
         }
     }
 
+    /**
+     * В процессе обработки, сохранялись потенциальные ноды, у которых нет входа и выхода,
+     * в этой функции мы их ищем, если по окончании выполнения, коллекция possibleNodesWithNoParents
+     * не пуста, то все эти ноды будут удалены из графа
+     * */
     private void checkOrphans(GraphNode node) {
         if(possibleNodesWithNoParents.contains(node)) {
             if(node.getNextElements().isEmpty() && node.getNextElementsWithInversion().isEmpty()) {
