@@ -1,17 +1,22 @@
-package ru.mephi.parser;
+package ru.mephi.restriction;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import ru.mephi.parser.FileParser;
 import ru.mephi.util.TestClass;
 
-class FileParserTest extends TestClass {
+import java.util.Map;
 
+class RestrictionAlgoTest extends TestClass {
     @ParameterizedTest(name = "Scheme: {arguments} iteration")
     @MethodSource("getResourcesFileNames")
     public void parseFileTest(String fileName) {
         var fileParser = new FileParser(fileName, false);
-
         var graph = fileParser.parseFile();
+        var algo = new RestrictionAlgo(new SimpleRestrictionProcessor(), graph);
+        var restrictions = Map.of(1, true, 2, false);
+
+        algo.execute(restrictions);
 
         System.out.println(graph);
     }

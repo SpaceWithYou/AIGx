@@ -7,7 +7,7 @@
     <artifactId>AIGX</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-
+    <!--TODO Добавить JMH и сравнить разные методы   -->
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>

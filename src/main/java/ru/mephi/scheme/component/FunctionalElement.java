@@ -9,7 +9,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Getter
 public class FunctionalElement {
-    private final ElementType type;
     private final List<Integer> inputs = new ArrayList<>();
     private final List<Integer> outputs = new ArrayList<>();
+    private final ElementType type;
 }
