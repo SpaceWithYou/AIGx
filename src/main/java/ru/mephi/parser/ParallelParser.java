@@ -1,6 +1,5 @@
 package ru.mephi.parser;
 
-import ru.mephi.parser.data.GraphPair;
 import ru.mephi.scheme.component.FunctionalElement;
 import ru.mephi.scheme.graph.Graph;
 
@@ -15,19 +14,14 @@ public class ParallelParser extends AbstractParser {
     }
 
     @Override
-    protected GraphPair getGraphs(Stream<String> linesStream) {
+    protected Graph getGraph(Stream<String> linesStream) {
         //TODO Пул потоков
 
-        var result = new GraphPair(
-                new Graph(
-                        new CopyOnWriteArrayList<>(),
-                        new CopyOnWriteArrayList<>(),
-                        new CopyOnWriteArrayList<>()),
-                new Graph(
-                        new CopyOnWriteArrayList<>(),
-                        new CopyOnWriteArrayList<>(),
-                        new CopyOnWriteArrayList<>()
-                ));
+        var result = new Graph(
+                new CopyOnWriteArrayList<>(),
+                new CopyOnWriteArrayList<>(),
+                new ConcurrentSkipListMap<>()
+        );
 
         linesStream
                 .parallel()
@@ -38,7 +32,7 @@ public class ParallelParser extends AbstractParser {
     }
 
     //TODO Реализовать
-    private void processElementParallel(FunctionalElement element, GraphPair graphPair) {
+    private void processElementParallel(FunctionalElement element, Graph graph) {
         throw new UnsupportedOperationException("Not implemented yet!");
     }
 }
