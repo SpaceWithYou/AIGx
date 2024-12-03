@@ -1,7 +1,6 @@
 package ru.mephi.restriction;
 
 import ru.mephi.parser.data.GraphPair;
-import ru.mephi.scheme.graph.Graph;
 import ru.mephi.scheme.graph.GraphNode;
 
 import static ru.mephi.scheme.component.ElementType.FALSE;
@@ -38,8 +37,10 @@ public class SimpleRestrictionProcessor implements RestrictionProcessor {
     }
 
     private void processTrueCase(GraphNode node) {
+
     }
 
     private void processFalseCase(GraphNode node) {
+
     }
 }

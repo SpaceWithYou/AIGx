@@ -25,8 +25,7 @@ public class RestrictionAlgo {
     }
 
     private void setValueToNode(int nodeNumber, boolean value) {
-        var graph = graphs.getGraph();
-        var inputs = graph.getInputs();
+        var inputs = graphs.getGraph().getInputs();
         int index = nodeNumber - 1;
         if(index < inputs.size() && index >= 0) {
             inputs.get(index).setType(getTypeByValue(value));
