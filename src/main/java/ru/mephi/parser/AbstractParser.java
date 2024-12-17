@@ -1,6 +1,6 @@
 package ru.mephi.parser;
 
-import ru.mephi.parser.data.GraphPair;
+import ru.mephi.scheme.graph.Graph;
 import ru.mephi.scheme.graph.GraphNode;
 
 import java.io.BufferedReader;
@@ -58,15 +58,15 @@ public abstract class AbstractParser {
         }
     }
 
-    public GraphPair parseFile() {
+    public Graph parseFile() {
         try {
             var linesStream = reader.lines();
-            return getGraphs(linesStream);
+            return getGraph(linesStream);
         } catch (Exception e) {
             System.err.println(e.getMessage());
             return null;
         }
     }
 
-    protected abstract GraphPair getGraphs(Stream<String> linesStream);
+    protected abstract Graph getGraph(Stream<String> linesStream);
 }
